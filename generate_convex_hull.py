@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from helper import plane_equation, is_point_outside, perpendicular_dist, find_farthest_point, get_edges
 
 
 class ConvexHullQuickHull:
@@ -27,6 +28,71 @@ class ConvexHullQuickHull:
         # combine the results
         return [point_A] + upper_hull + [point_B] + lower_hull  # the order matters, as the correct order forms the closed loop of the hull
     
+    def quickhull_3D(self):
+
+        if len(self.points) < 4:
+            return self.points
+        
+        # Init the convex hull as a tetrahedron
+        hull_points = self.create_tetrahedron(self.points)
+        hull_faces  = []
+
+        # create the init faces for the tetrahedron
+        p1, p2, p3, p4 = hull_points
+        hull_faces.append([p1, p2, p3])
+        hull_faces.append([p1, p3, p4])
+        hull_faces.append([p1, p2, p4])
+        hull_faces.append([p2, p3, p4])
+
+        # find the points outside each face of the tetrahedron
+        for face in hull_faces:
+            outside_points = [point for point in self.points if is_point_outside(face, point)]
+
+            if outside_points:
+                farthest_point = find_farthest_point(face, outside_points)
+                hull_faces = self.update_hull(hull_faces, face, farthest_point)
+        
+        return hull_faces
+    
+    def update_hull(self, hull_faces: list, face, farthest_point):
+        """
+        update the hull with the farthest point
+        """
+
+        # remove the current face
+        hull_faces.remove(face)
+
+        # add new faces formed by the farthest point and edges of the current face
+        new_faces = []
+
+        for edge in get_edges(face):
+            new_face = plane_equation([edge[0], edge[1], farthest_point])
+            new_faces.append(new_face)
+        
+        hull_faces.extend(new_faces)
+
+        return hull_faces
+
+    @staticmethod
+    def find_extreme_points_3D(points: list) -> list:
+
+        """
+        find the extreme points in 3D space on each axis: x y z direction
+        """
+        min_x, max_x = min(points, key=lambda p: p[0]), max(points, key=lambda p: p[0])
+        min_y, max_y = min(points, key=lambda p: p[1]), max(points, key=lambda p: p[1])
+        min_z, max_z = min(points, key=lambda p: p[2]), max(points, key=lambda p: p[2])
+
+        return [min_x, max_x, min_y, max_y, min_z, max_z]
+    
+    def create_tetrahedron(self, points: list) -> list:
+
+        extreme_points = self.find_extreme_points_3D(points)
+
+        # create the tetrahedron from 4 non-coplanar points
+        tetrahedron = [extreme_points[i] for i in range(0, 6, 2)]
+        return tetrahedron
+
     def find_hull_2D(self, point_A, point_B, points):
 
         if not points:
