@@ -18,12 +18,12 @@ class ConvexHullQuickHull:
         point_B = max(self.points, key=lambda p: p[0])
 
         # Divide points into upper and lower of AB
-        upper_points = [p for p in self.points if self.is_upper_2D(point_A, point_B, p)]
-        lower_points = [p for p in self.points if self.is_upper_2D(point_B, point_A, p)]
+        left_points  = [p for p in self.points if self.is_left_2D(point_A, point_B, p)]
+        right_points = [p for p in self.points if self.is_left_2D(point_B, point_A, p)]
 
-        # Recursively find the hull for upper and lower subsets
-        upper_hull = self.find_hull_2D(point_A, point_B, upper_points)
-        lower_hull = self.find_hull_2D(point_B, point_A, lower_points)
+        # Find the hull for upper and lower subsets
+        upper_hull = self.find_hull_2D(point_A, point_B, left_points)
+        lower_hull = self.find_hull_2D(point_B, point_A, right_points)
 
         # combine the results
         return [point_A] + upper_hull + [point_B] + lower_hull  # the order matters, as the correct order forms the closed loop of the hull
@@ -103,17 +103,17 @@ class ConvexHullQuickHull:
         point_C = max(points, key=lambda p: self.find_distance_point_line(point_A, point_B, p))
 
         # divide points to those outside triangle ABC
-        upper_points = [p for p in points if self.is_upper_2D(point_A, point_C, p)]
-        lower_points = [p for p in points if self.is_upper_2D(point_C, point_B, p)]
+        left_AC_points  = [p for p in points if self.is_left_2D(point_A, point_C, p)]
+        left_CB_points  = [p for p in points if self.is_left_2D(point_C, point_B, p)]
 
         # recursively find the hull for new subsets
-        above_AC = self.find_hull_2D(point_A, point_C, upper_points)
-        above_CB = self.find_hull_2D(point_C, point_B, lower_points)
+        hull_beyond_AC = self.find_hull_2D(point_A, point_C, left_AC_points)
+        hull_beyond_CB = self.find_hull_2D(point_C, point_B, left_CB_points)
 
-        return above_AC + [point_C] + above_CB
+        return hull_beyond_AC + [point_C] + hull_beyond_CB
     
     @staticmethod
-    def is_upper_2D(point_A, point_B, p):
+    def is_left_2D(point_A, point_B, p):
         flag = (point_B[0] - point_A[0]) * (p[1] - point_B[1]) - (p[0] - point_B[0]) * (point_B[1] - point_A[1]) > 0
         return flag
     
