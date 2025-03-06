@@ -24,7 +24,7 @@ Some key geometry problems in this 2D convex hull:
 ![Compute distance from point to a line - Approach 1](images/find_distance_point_line_1.png)
 ![Compute distance from point to a line - Approach 2](images/find_distance_point_line_2.png)
 
-As for 2D convex hull problem, some geometry problems should be known before diving in:
+As for 3D convex hull problem, some geometry problems should be known before diving in:
 1. How to form a plane equation in 3D:
 ![The way to form a plane equation with 3 points $P_1$, $P_2$ and $P_3$](images/how_to_form_a_plane_with_3_points.png)
 2. How to find the distance from a point to a plane:
