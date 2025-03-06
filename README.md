@@ -11,8 +11,8 @@ Also a quick tip in finding `min` points by components in the list:
 ```python
 # suppose there is a list of points, each point in (x, y) format:
 number = [(3, 2), (8, 1), (10, 6)]
-smallest_x_number = min(number, key=lambda p: p[0]);
-smallest_y_number = min(number, key=lambda p: p[1]);
+smallest_x_number = min(number, key=lambda p: p[0])
+smallest_y_number = min(number, key=lambda p: p[1])
 
 print("The smallest x number is:", smallest_x_number)  # expected output: (3, 2)
 print("The smallest y number is:", smallest_y_number)  # expected output: (8, 1)
@@ -29,3 +29,10 @@ As for 3D convex hull problem, some geometry problems should be known before div
 ![The way to form a plane equation with 3 points $P_1$, $P_2$ and $P_3$](images/how_to_form_a_plane_with_3_points.png)
 2. How to find the distance from a point to a plane:
 ![The way to find the distance between a point $P$ and a plane $\alpha$](images/find_distance_from_point_to_a_plane.png)
+
+Then here comes the overall idea of convex hull algorithm:
+![Convex hull algorithm step 1](images/convex_hull_1.png)
+![Convex hull algorithm step 2](images/convex_hull_2.png)
+![Convex hull algorithm step 3](images/convex_hull_3.png)
+![Convex hull algorithm step 4](images/convex_hull_4.png)
+![Convex hull algorithm step 5](images/convex_hull_5.png)
