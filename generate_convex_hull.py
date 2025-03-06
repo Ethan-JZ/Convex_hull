@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from helper import plane_equation, is_point_outside, find_farthest_point, get_edges
-
+from matplotlib.patches import Polygon
 
 class ConvexHullQuickHull:
 
@@ -133,10 +133,17 @@ class ConvexHullQuickHull:
     def plot_convex_hull(self):
 
         if self.dimension == 2:  # plot the points if it's 2D
-            fig, ax = plt.subplots(figsize=(5, 5))
+            fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
+
+            # plotting for ax1: just the points
             x = [point[0] for point in self.points]
             y = [point[1] for point in self.points]
-
+            ax1.scatter(x, y, s=30, edgecolors="black", marker="o", c='orange')
+            ax1.set_xlabel("X")
+            ax1.set_ylabel("Y")
+            ax1.grid()
+         
+            # plotting for ax2: points and the convex hull
             # get the convex hull points set
             convexhull = self.quickhull_2D()
             x_convex   = [point[0] for point in convexhull]
@@ -145,14 +152,19 @@ class ConvexHullQuickHull:
             # append the first point to close the convex
             x_convex.append(x_convex[0])
             y_convex.append(y_convex[0])
+
+            # Create the polygon
+            polygon = Polygon(convexhull, closed=True, facecolor='lightblue', edgecolor='black')
+            ax2.add_patch(polygon)
             
             # draw the convex hull
             plt.plot(x_convex, y_convex, c="black", mec="black", marker="o", ms=10, mfc="red")
             
             # draw the points set
-            ax.scatter(x, y, s=30, edgecolors="black", marker="o", c='orange')
-            ax.set_xlabel("X")
-            ax.set_ylabel("Y")
-            plt.grid()
+            ax2.scatter(x, y, s=30, edgecolors="black", marker="o", c='orange')
+            ax2.set_xlabel("X")
+            ax2.set_ylabel("Y")
+            
+            ax2.grid()
             plt.show()
         
