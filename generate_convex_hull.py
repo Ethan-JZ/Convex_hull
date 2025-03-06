@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from helper import plane_equation, is_point_outside, perpendicular_dist, find_farthest_point, get_edges
+from helper import plane_equation, is_point_outside, find_farthest_point, get_edges
 
 
 class ConvexHullQuickHull:
@@ -29,7 +29,8 @@ class ConvexHullQuickHull:
         return [point_A] + upper_hull + [point_B] + lower_hull  # the order matters, as the correct order forms the closed loop of the hull
     
     def quickhull_3D(self):
-
+        
+        # base case
         if len(self.points) < 4:
             return self.points
         
