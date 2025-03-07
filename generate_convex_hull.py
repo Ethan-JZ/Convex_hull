@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from helper import plane_equation, is_point_outside, find_farthest_point, get_edges
+from helper import plane_equation, is_point_outside, find_farthest_point, get_edges, find_non_coplanar_points
 from matplotlib.patches import Polygon
 
 class ConvexHullQuickHull:
@@ -7,6 +7,11 @@ class ConvexHullQuickHull:
     def __init__(self, points: list, dimension: int):
         self.points    = points
         self.dimension = dimension
+
+        if len(self.points) == 0:
+            raise ValueError("Input points set is empty")
+        elif len(self.points) <= 2:
+            raise ValueError("Input points set must have at least 3 points")
     
     def quickhull_2D(self):
 
@@ -91,7 +96,7 @@ class ConvexHullQuickHull:
         extreme_points = self.find_extreme_points_3D(points)
 
         # create the tetrahedron from 4 non-coplanar points
-        tetrahedron = [extreme_points[i] for i in range(0, 6, 2)]
+        tetrahedron = find_non_coplanar_points(extreme_points)
         return tetrahedron
 
     def find_hull_2D(self, point_A, point_B, points):
@@ -133,7 +138,10 @@ class ConvexHullQuickHull:
     def plot_convex_hull(self):
 
         if self.dimension == 2:  # plot the points if it's 2D
-            fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
+            fig = plt.figure(figsize=(10, 5))
+            
+            ax1 = fig.add_subplot(1, 2, 1)  # 2 rows, 1 column, first subplot
+            ax2 = fig.add_subplot(1, 2, 2)  # 2 rows, 1 column, second subplot
 
             # plotting for ax1: just the points
             x = [point[0] for point in self.points]
@@ -167,4 +175,18 @@ class ConvexHullQuickHull:
             
             ax2.grid()
             plt.show()
-        
+
+        elif self.dimension == 3:
+            fig = plt.figure(figsize=(5, 10))
+            
+            ax1 = fig.add_subplot(2, 1, 1, projection='3d')  # 2 rows, 1 column, first subplot
+            ax2 = fig.add_subplot(2, 1, 2, projection='3d')  # 2 rows, 1 column, second subplot
+
+            x = [point[0] for point in self.points]
+            y = [point[1] for point in self.points]
+            z = [point[2] for point in self.points]
+            ax1.set_xlabel("X")
+            ax1.set_ylabel("Y")
+            ax1.set_zlabel("Z")
+
+            ax1.scatter(x, y, z, s=20, edgecolors="black", marker="o", c='orange')
