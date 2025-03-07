@@ -15,7 +15,7 @@ def plane_equation(p1, p2, p3):
 
     normal = np.cross(p1_p2, p1_p3)
     a, b, c = normal
-    d = np.dot(normal, p1)
+    d = a * p1[0] + b * p1[1] + c * p1[2]
     return a, b, c, d
 
 def is_point_outside(face, point, epsilon=1e-6):

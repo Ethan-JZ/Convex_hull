@@ -60,9 +60,14 @@ class ConvexHullQuickHull:
         
         return hull_faces
     
-    def update_hull(self, hull_faces: list, face, farthest_point):
+    def update_hull(self, hull_faces: list, face: list, farthest_point: list) -> list:
         """
         update the hull with the farthest point
+
+        hull_faces: list of faces: [[p1, p2, p3], [p1, p3, p4], ...]
+        face: the current face, a list of 3 points [(x1, y1, z1), (x2, y2, z2), (x3, y3, z3)]
+        farthest_point: the farthest point from the face, a list of 3 points [(x, y, z)]
+        return the updated hull_faces: list of faces with the farthest point added
         """
 
         # remove the current face
@@ -72,7 +77,7 @@ class ConvexHullQuickHull:
         new_faces = []
 
         for edge in get_edges(face):
-            new_face = plane_equation([edge[0], edge[1], farthest_point])
+            new_face = [edge[0], edge[1], farthest_point]
             new_faces.append(new_face)
         
         hull_faces.extend(new_faces)
@@ -123,17 +128,26 @@ class ConvexHullQuickHull:
         return flag
     
     @staticmethod
-    def find_distance_point_line(point_A, point_B, point):
-        
-        # find k and b of the line formed by point A and point B
+    def line_equation(point_A, point_B):
+        """
+        form the line from point A to point B
+
+        return coefficients of ax + by + c = 0
+        """
         slope_k = (point_B[1] - point_A[1]) / (point_B[0] - point_A[0])
         bias_b  = point_A[1] - slope_k * point_A[0]
+
+        a = slope_k
+        b = -1
+        c = bias_b
+        return a, b, c
+
+    def find_distance_point_line(self, point_A, point_B, point):
         
-        # find the distance from point to line AB
-        x, y = point[0], point[1]
-        distance = abs(slope_k * x - y + bias_b) / (slope_k ** 2 + 1) ** 0.5
+        # find k and b of the line formed by point A and point B
+        a, b, c = self.line_equation(point_A, point_B)
         
-        return distance
+        return abs(a * point[0] + b * point[1] + c) / (a ** 2 + b ** 2) ** 0.5
 
     def plot_convex_hull(self):
 
@@ -177,11 +191,14 @@ class ConvexHullQuickHull:
             plt.show()
 
         elif self.dimension == 3:
+
+            # init the figure and axes
             fig = plt.figure(figsize=(5, 10))
             
             ax1 = fig.add_subplot(2, 1, 1, projection='3d')  # 2 rows, 1 column, first subplot
             ax2 = fig.add_subplot(2, 1, 2, projection='3d')  # 2 rows, 1 column, second subplot
-
+            
+            # plotting for ax1: just the points
             x = [point[0] for point in self.points]
             y = [point[1] for point in self.points]
             z = [point[2] for point in self.points]
@@ -190,3 +207,5 @@ class ConvexHullQuickHull:
             ax1.set_zlabel("Z")
 
             ax1.scatter(x, y, z, s=20, edgecolors="black", marker="o", c='orange')
+
+            # plotting for ax2: points and the convex hull
